@@ -42,10 +42,19 @@ import {logger} from '../../source/tests.utilities';
               <option value="two">Two</option>
               <option value="three">Three</option>
             </select>
+
+            <template connectArray let-index connectArrayOf="cities">
+              <div [ngModelGroup]="index">
+                <input ngControl ngModel name="name" type="string" placeholder='City' />
+              </div>
+            </template>
+
           </div>
         </template>
         <button (click)="addRow()">Add</button>
       </form>
+
+
       <div>
         <h3>Redux state</h3>
         <div class="form-values">
@@ -67,6 +76,12 @@ import {logger} from '../../source/tests.utilities';
               <div>
                 Dropdown
                 <span>{{item.dropdownExample}}</span>
+              </div>
+              <div class="arrays">
+                Cities:
+                <div *ngFor="let city of (item.cities)">
+                  <span>{{city.name}}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -146,6 +161,9 @@ interface AppState {
     arrayExample?: {
       numberExample?: number,
       dropdownExample?: string;
+      cities: {
+        name: string
+      }[]
     }[]
   };
   todos?: Map<string, any>;
@@ -157,11 +175,13 @@ const form1 = {
   arrayExample: [
     {
       numberExample: 1,
-      dropdownExample: 'one'
+      dropdownExample: 'one',
+      cities: [{name: 'Detroit'},{name: 'Pittsburgh'}]
     },
     {
       numberExample: 2,
-      dropdownExample: 'two'
+      dropdownExample: 'two',
+      cities: [{name: 'Chicago'}, {name: 'New York'}]
     }
   ]
 };
@@ -185,7 +205,8 @@ function formReducer(state = form1, action: {type: string, payload?}) {
   if (action.type === 'ADD_FORM_ENTRY') {
     state.arrayExample.push({
       numberExample: null,
-      dropdownExample: null
+      dropdownExample: null,
+      cities:[{name: ''}]
     });
   }
   return state;
